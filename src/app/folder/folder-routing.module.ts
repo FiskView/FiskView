@@ -7,6 +7,14 @@ const routes: Routes = [
   {
     path: '',
     component: FolderPage
+  },
+  {
+    path: 'perfil',
+    loadChildren: () => import('./perfil/perfil.module').then( m => m.PerfilPageModule)
+  },
+  {
+    path: 'candidatos',
+    loadChildren: () => import('./candidatos/candidatos.module').then( m => m.CandidatosPageModule)
   }
 ];
 
