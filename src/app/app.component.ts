@@ -43,7 +43,7 @@ export class AppComponent {
       ]
     },
     { title: 'Votar', url: '/folder/Inbox/voto', icon: 'finger-print' },
-    { title: 'Verificar Voto', url: '/folder/Inbox/Verificar Voto', icon: 'cloud-done' },
+    { title: 'Verificar Voto', url: '/folder/Inbox/verificar-voto', icon: 'cloud-done' },
   ];
   
   constructor(private partyService: PartyService) {}
