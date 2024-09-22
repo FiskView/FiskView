@@ -1,5 +1,7 @@
 {
   "name": "Fisk_View",
-  "integrations": {},
+  "integrations": {
+    "capacitor": {}
+  },
   "type": "angular"
 }
