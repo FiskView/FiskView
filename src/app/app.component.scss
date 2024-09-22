@@ -1,9 +1,8 @@
 ion-menu ion-content {
-  --background: #cad2c5; /* Fondo del menú */
+  --background: #ffffff; /* Fondo del menú */
 }
 
 ion-menu.md ion-content {
-  --background: #cad2c5;
   --padding-start: 8px;
   --padding-end: 8px;
   --padding-top: 20px;
@@ -11,12 +10,12 @@ ion-menu.md ion-content {
 }
 
 ion-menu.md ion-list {
-  background-color: #cad2c5; /* Fondo de la lista */
+  background-color: #ffffff; /* Fondo de la lista */
   padding: 20px 0;
 }
 
 ion-menu.md ion-note {
-  --background: #cad2c5;
+  --background: #ffffff;
   margin-bottom: 30px;
 }
 
@@ -26,7 +25,7 @@ ion-menu.md ion-note {
 }
 
 ion-menu.md ion-list#inbox-list {
-  border-bottom: 1px solid #84a98c; /* Borde con color de la paleta */
+  border-bottom: 1px solid #ffffff; /* Borde con color de la paleta */
 }
 
 ion-menu.md ion-list#inbox-list ion-list-header {
@@ -44,12 +43,13 @@ ion-menu.md ion-list#labels-list ion-list-header {
 
 /* Estilos para aumentar el espacio entre ion-item */
 ion-menu.md ion-item {
-  --padding-top: 40px; /* Espacio superior */
-  --padding-bottom: 20px; /* Espacio inferior */
+  --padding-top: 20px; /* Espacio superior */
+  --padding-bottom: 12px; /* Espacio inferior */
   --padding-start: 10px;
   --padding-end: 10px;
+  margin-bottom: 10px; /* Espacio entre items */
   border-radius: 4px;
-  background-color: #cad2c5; /* Fondo de los items del menú */
+  background-color: #ffffff; /* Fondo de los items del menú */
   color: #2f3e46; /* Color de texto de los ítems */
 }
 
@@ -121,4 +121,14 @@ ion-note {
 
 ion-item.selected {
   --color: var(--ion-color-primary); /* Color del texto cuando está seleccionado */
+}
+
+/* También puedes ajustar el espaciado general de los ítems */
+ion-menu.md ion-item {
+  --padding-top: 12px; /* Espacio superior */
+  --padding-bottom: 12px; /* Espacio inferior */
+  margin-bottom: 10px; /* Espacio entre items */
+  border-radius: 4px;
+  background-color: #cad2c5; /* Fondo de los items del menú */
+  color: #2f3e46; /* Color de texto de los ítems */
 }

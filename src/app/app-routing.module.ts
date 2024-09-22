@@ -14,6 +14,10 @@ const routes: Routes = [
   {
     path: 'folder/:id/perfil',
     loadChildren: () => import('./folder/perfil/perfil.module').then(m => m.PerfilPageModule)
+  },
+  {
+    path: 'folder/:id/candidatos',
+    loadChildren: () => import('./folder/candidatos/candidatos.module').then(m => m.CandidatosPageModule)
   }
 ];
 
