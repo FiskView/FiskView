@@ -1,13 +1,21 @@
-<ion-header [translucent]="true">
+<ion-header>
   <ion-toolbar>
-    <ion-title>candidatos</ion-title>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title *ngIf="selectedParty">{{ selectedParty.name }}</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">candidatos</ion-title>
-    </ion-toolbar>
-  </ion-header>
+<ion-content>
+  <ion-list *ngIf="selectedParty">
+    <ion-item *ngFor="let candidate of selectedParty.candidates">
+      <ion-label>
+        <h2>{{ candidate.firstName }} {{ candidate.lastName }}</h2>
+        <p>Categoría: {{ candidate.category }}</p>
+        <p>{{ candidate.generalInfo }}</p>
+        <a [href]="candidate.proposalFile" target="_blank">Ver Propuestas</a>
+      </ion-label>
+    </ion-item>
+  </ion-list>
 </ion-content>
