@@ -42,7 +42,7 @@ export class AppComponent {
         }
       ]
     },
-    { title: 'Votar', url: '/folder/Inbox/Votar', icon: 'finger-print' },
+    { title: 'Votar', url: '/folder/Inbox/voto', icon: 'finger-print' },
     { title: 'Verificar Voto', url: '/folder/Inbox/Verificar Voto', icon: 'cloud-done' },
   ];
   

@@ -1,0 +1,25 @@
+.camara-container {
+    text-align: center;
+    margin-top: 20px;
+  }
+  
+  .simulacion-camara {
+    width: 100%;
+    height: 300px; /* Tamaño que simula la cámara */
+    background-color: #ccc; /* Color gris para simular cámara en caso de no tener imagen */
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .simulacion-camara img {
+    max-width: 100%;
+    max-height: 100%;
+  }
+  
+  ion-button {
+    width: 200px;
+    margin-top: 20px;
+  }
+  
