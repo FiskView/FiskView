@@ -15,7 +15,25 @@ const routes: Routes = [
   {
     path: 'candidatos',
     loadChildren: () => import('./candidatos/candidatos.module').then( m => m.CandidatosPageModule)
+  },
+  {
+    path: 'voto',
+    loadChildren: () => import('./voto/voto.module').then( m => m.VotoPageModule)
+  },
+  {
+    path: 'verificacion',
+    loadChildren: () => import('./voto/verificacion/verificacion.module').then( m => m.VerificacionPageModule)
+  },
+  {
+    path: 'categorias',
+    loadChildren: () => import('./voto/categorias/categorias.module').then( m => m.CategoriasPageModule)
   }
+  ,
+  {
+    path: 'resumen',
+    loadChildren: () => import('./voto/resumen/resumen.module').then( m => m.ResumenPageModule)
+  }
+
 ];
 
 @NgModule({

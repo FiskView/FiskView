@@ -18,6 +18,22 @@ const routes: Routes = [
   {
     path: 'folder/:id/candidatos',
     loadChildren: () => import('./folder/candidatos/candidatos.module').then(m => m.CandidatosPageModule)
+  },
+  {
+    path: 'folder/:id/voto',
+    loadChildren: () => import('./folder/voto/voto.module').then(m => m.VotoPageModule)
+  },
+  {
+    path: 'folder/:id/voto/verificacion',
+    loadChildren: () => import('./folder/voto/verificacion/verificacion.module').then(m => m.VerificacionPageModule)
+  },
+  {
+    path: 'folder/:id/voto/categorias',
+    loadChildren: () => import('./folder/voto/categorias/categorias.module').then(m => m.CategoriasPageModule)
+  },
+  {
+    path: 'folder/:id/voto/resumen',
+    loadChildren: () => import('./folder/voto/resumen/resumen.module').then(m => m.ResumenPageModule)
   }
 ];
 

@@ -1,0 +1,32 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Elección de Candidatos</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>
+        <h2>{{ tituloCategoria }}</h2>
+      </ion-card-title>
+    </ion-card-header>
+
+    <ion-card-content>
+      <ion-list>
+        <ion-item *ngFor="let candidato of candidatos">
+          <ion-avatar slot="start">
+            <img [src]="candidato.imagen" alt="{{ candidato.nombre }}">
+          </ion-avatar>
+          <ion-label>
+            <h2>{{ candidato.nombre }}</h2>
+            <p>{{ candidato.partido }}</p>
+          </ion-label>
+          <ion-checkbox slot="end" [(ngModel)]="candidato.seleccionado" (ionChange)="verificarSeleccion(candidato)"></ion-checkbox>
+        </ion-item>
+      </ion-list>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-button expand="block" [disabled]="!seleccionado" (click)="siguienteCategoria()">Siguiente</ion-button>
+</ion-content>
