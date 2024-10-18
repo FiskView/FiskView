@@ -36,7 +36,11 @@ const routes: Routes = [
   {
     path: 'Verificar Voto',
     loadChildren: () => import('./verificar-voto/verificar-voto.module').then( m => m.VerificarVotoPageModule)
+  },  {
+    path: 'login',
+    loadChildren: () => import('./login/login.module').then( m => m.LoginPageModule)
   }
+
 
 
 ];

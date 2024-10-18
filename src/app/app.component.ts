@@ -1,5 +1,7 @@
 import { Component } from '@angular/core';
 import { PartyService } from './services/party.service'; 
+import { AuthService } from './services/auth.service'; // Suponiendo que tienes un servicio de autenticación
+import { Router } from '@angular/router';
 
 interface AppPage {
   title: string;
@@ -45,8 +47,26 @@ export class AppComponent {
     { title: 'Votar', url: '/folder/Inbox/voto', icon: 'finger-print' },
     { title: 'Verificar Voto', url: '/folder/Inbox/verificar-voto', icon: 'cloud-done' },
   ];
+
+  isAuthenticated = false;
   
-  constructor(private partyService: PartyService) {}
+  constructor(
+    private authService: AuthService,
+    private partyService: PartyService,
+    private router: Router
+  ) {
+
+    this.authService.isAuthenticated().subscribe(authStatus => {
+      this.isAuthenticated = authStatus;
+    });
+  }
+
+
+  logout() {
+    this.authService.logout(); // Llama al método de logout en tu AuthService
+    this.router.navigate(['/folder/login']); // Redirige al usuario a la página de inicio de sesión
+  }
+
 
   selectParty(party: any) {
     const fullParty = this.appPages.find(p => p.parties && p.parties.some(pt => pt.title === party.title));

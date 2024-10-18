@@ -1,5 +1,6 @@
 <ion-app>
-  <ion-split-pane contentId="main-content">
+  <!-- Solo mostrar el menú si el usuario está autenticado -->
+  <ion-split-pane *ngIf="isAuthenticated" contentId="main-content">
     <ion-menu contentId="main-content" type="overlay">
       <ion-content>
         <ion-list id="inbox-list">
@@ -7,11 +8,19 @@
           <ion-note>hi&#64;ionicframework.com</ion-note>
 
           <ion-menu-toggle auto-hide="false" *ngFor="let p of appPages; let i = index">
-            <ion-item *ngIf="p.title !== 'Candidatos'" routerDirection="root" [routerLink]="[p.url]" lines="none" detail="false" routerLinkActive="selected" style="margin-bottom: 10px;">
+            <!-- Mostrar las opciones del menú excepto "Candidatos" -->
+            <ion-item *ngIf="p.title !== 'Candidatos'" 
+                      routerDirection="root" 
+                      [routerLink]="[p.url]" 
+                      lines="none" 
+                      detail="false" 
+                      routerLinkActive="selected" 
+                      style="margin-bottom: 10px;">
               <ion-icon aria-hidden="true" slot="start" [ios]="p.icon + '-outline'" [md]="p.icon + '-sharp'"></ion-icon>
               <ion-label>{{ p.title }}</ion-label>
             </ion-item>
-          
+
+            <!-- Menú desplegable para "Candidatos" -->
             <ion-accordion-group>
               <ion-accordion *ngIf="p.title === 'Candidatos'" (click)="$event.stopPropagation()">
                 <ion-item slot="header">
@@ -28,11 +37,21 @@
                 </ion-list>
               </ion-accordion>
             </ion-accordion-group>
-            
+
           </ion-menu-toggle>
+
+          <!-- Botón de Cerrar Sesión -->
+          <ion-item (click)="logout()" lines="none" style="margin-top: auto;">
+            <ion-icon slot="start" name="log-out"></ion-icon>
+            <ion-label>Cerrar Sesión</ion-label>
+          </ion-item>
+
         </ion-list>
       </ion-content>
     </ion-menu>
     <ion-router-outlet id="main-content"></ion-router-outlet>
   </ion-split-pane>
+
+  <!-- Pantalla de login si no está autenticado -->
+  <ion-router-outlet *ngIf="!isAuthenticated" id="login-content"></ion-router-outlet>
 </ion-app>
