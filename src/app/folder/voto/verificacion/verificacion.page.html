@@ -1,12 +1,4 @@
-<div class="camara-container">
-  <!-- Aquí simulas la cámara con un contenedor o imagen -->
-  <div class="simulacion-camara">
-    <img src="assets/images/simulacion-camara.png" alt="Simulación de cámara">
-  </div>
-
-  <!-- Mensaje de simulación -->
-  <p>Simulando apertura de la cámara...</p>
-
-  <!-- Botón para iniciar verificación -->
-  <ion-button (click)="iniciarVerificacion()">Iniciar Verificación</ion-button>
-</div>
+<ion-content>
+  <video #video width="400" height="300" autoplay></video>
+  <div *ngIf="mensaje">{{ mensaje }}</div> <!-- Muestra el mensaje si existe -->
+</ion-content>
