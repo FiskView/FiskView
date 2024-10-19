@@ -2,42 +2,79 @@ import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AuthService } from 'src/app/services/auth.service';
 import { Router } from '@angular/router';
+import { UsuarioService } from 'src/app/services/usuario.service'; // Importa UsuarioService
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.page.html',
 })
 export class LoginPage {
-  loginForm: FormGroup;
-  loading = false; // Para manejar el estado de carga
-  passwordVisible = false; // Para manejar la visibilidad de la contraseña
+  signInForm: FormGroup;
+  registroExitoso: boolean = false;
+  passwordVisible: boolean = false;
 
-  constructor(private formBuilder: FormBuilder, private authService: AuthService, private router: Router) {
-    this.loginForm = this.formBuilder.group({
-      correo_electronico: ['', [Validators.required, Validators.email]],
-      contraseña: ['', Validators.required],
+  constructor(
+    private fb: FormBuilder, 
+    private usuarioService: UsuarioService,
+    private authService: AuthService,
+    private router: Router) {
+
+
+
+    this.signInForm = this.fb.group({
+      email: ['', [Validators.required, Validators.email]],
+      password: ['', [Validators.required]],
     });
   }
 
-  onLogin() {
-    if (this.loginForm.valid) {
-      this.loading = true; // Cambiar el estado de carga
-      const { correo_electronico, contraseña } = this.loginForm.value;
-      this.authService.login(correo_electronico, contraseña).subscribe(
-        response => {
-          localStorage.setItem('token', response.token); // Almacenar el token
-          this.router.navigate(['/folder/Inbox/perfil']); // Redirigir al usuario a la página de inicio
-          this.loading = false; // Finalizar el estado de carga
-        },
-        error => {
-          console.error('Error de inicio de sesión', error);
-          this.loading = false; // Finalizar el estado de carga en caso de error
-        }
-      );
+  togglePasswordVisibility(): void {
+    this.passwordVisible = !this.passwordVisible;
+  }
+
+  passwordValidator(control: any) {
+    const value = control.value;
+    if (!/[A-Z]/.test(value)) {
+      return { missingUpperCase: true };
+    }
+    if (!/[a-z]/.test(value)) {
+      return { missingLowerCase: true };
+    }
+    if (!/[0-9]/.test(value)) {
+      return { missingNumber: true };
+    }
+    if (!/[@#$%^&+=!]/.test(value)) {
+      return { missingSpecialChar: true };
+    }
+    return null;
+  }
+
+  togglePanel(signUpMode: boolean): void {
+    const container = document.getElementById('container');
+    if (signUpMode) {
+      container?.classList.add('right-panel-active');
+    } else {
+      container?.classList.remove('right-panel-active');
     }
   }
 
-  togglePasswordVisibility() {
-    this.passwordVisible = !this.passwordVisible; // Alternar visibilidad de la contraseña
+  onSignIn(): void {
+    if (this.signInForm.valid) {
+      const { email, password } = this.signInForm.value;
+      
+      this.authService.login(email, password).subscribe(
+        (response: any) => {
+          console.log('Inicio de sesión exitoso:', response);
+          this.router.navigate(['/folder/Inbox/perfil']); // Redirige a la página de inicio
+        },
+        (error: any) => {
+          console.error('Error en el inicio de sesión:', error);
+          // Aquí puedes mostrar un mensaje de error al usuario
+        }
+      );
+    } else {
+      console.error('Formulario inválido. Revise los campos.');
+      // Aquí puedes mostrar un mensaje de error al usuario si el formulario no es válido
+    }
   }
+  
 }

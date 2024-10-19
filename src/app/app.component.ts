@@ -48,7 +48,7 @@ export class AppComponent {
     { title: 'Verificar Voto', url: '/folder/Inbox/verificar-voto', icon: 'cloud-done' },
   ];
 
-  isAuthenticated = false;
+  usuarioLogueado: string | null = null;
   
   constructor(
     private authService: AuthService,
@@ -56,8 +56,8 @@ export class AppComponent {
     private router: Router
   ) {
 
-    this.authService.isAuthenticated().subscribe(authStatus => {
-      this.isAuthenticated = authStatus;
+    this.authService.usuarioAutenticado$.subscribe(usuario => {
+      this.usuarioLogueado = usuario;
     });
   }
 
