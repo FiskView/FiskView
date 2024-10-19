@@ -1,6 +1,6 @@
 <ion-app>
   <!-- Solo mostrar el menú si el usuario está autenticado -->
-  <ion-split-pane *ngIf="isAuthenticated" contentId="main-content">
+  <ion-split-pane *ngIf="usuarioLogueado" contentId="main-content">
     <ion-menu contentId="main-content" type="overlay">
       <ion-content>
         <ion-list id="inbox-list">
@@ -53,5 +53,5 @@
   </ion-split-pane>
 
   <!-- Pantalla de login si no está autenticado -->
-  <ion-router-outlet *ngIf="!isAuthenticated" id="login-content"></ion-router-outlet>
+  <ion-router-outlet *ngIf="!usuarioLogueado" id="login-content"></ion-router-outlet>
 </ion-app>

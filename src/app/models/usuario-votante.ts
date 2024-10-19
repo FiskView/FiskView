@@ -5,7 +5,7 @@ export interface UsuarioVotante {
     dni: string; 
     fechaNacimiento: string; 
     email: string; 
-    contraseña: string; 
+    password: string; 
     departamentoId: number; 
     provinciaId: number; 
     distritoId: number;

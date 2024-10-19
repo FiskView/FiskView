@@ -4,6 +4,7 @@ import { UsuarioService } from './usuario.service';
 
 describe('UsuarioService', () => {
   let service: UsuarioService;
+  
 
   beforeEach(() => {
     TestBed.configureTestingModule({});

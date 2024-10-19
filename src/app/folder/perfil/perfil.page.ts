@@ -1,4 +1,7 @@
-import { Component, OnInit,ChangeDetectorRef  } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { UsuarioService } from 'src/app/services/usuario.service'; 
+import { UsuarioVotante } from 'src/app/models/usuario-votante';
+import { Router } from '@angular/router'; // Importa Router para redirigir después del logout
 
 @Component({
   selector: 'app-perfil',
@@ -6,101 +9,38 @@ import { Component, OnInit,ChangeDetectorRef  } from '@angular/core';
   styleUrls: ['./perfil.page.scss'],
 })
 export class PerfilPage implements OnInit {
-  user = {
-    profilePhoto: 'path/to/default/photo.jpg',
-    name: 'Nombre del Usuario',
-    dni: '12345678',
-    documentType: 'DNI', // Agrega el tipo de documento
-    birthDate: '', // Inicializa vacío
-    email: 'user@example.com',
-    department: '', // Inicializa vacío
-    province: '', // Inicializa vacío
-    district: '' // Inicializa vacío
-  };
-
-  departments = ['Departamento 1', 'Departamento 2', 'Departamento 3'];
-  districts = ['Distrito 1', 'Distrito 2', 'Distrito 3'];
-  provinces = ['Provincia 1', 'Provincia 2', 'Provincia 3'];
-
-  showCalendar = false;
-  isEmailEditable = false; 
+  user: UsuarioVotante | null = null; // Variable para almacenar los datos del usuario
 
   constructor(
-    private cdr: ChangeDetectorRef
+    private userService: UsuarioService, 
+    private router: Router
   ) {}
 
   ngOnInit() {
-    // Aquí puedes cargar datos adicionales si es necesario
-    console.log('Departments:', this.departments);
-    console.log('Districts:', this.districts);
-    console.log('Provinces:', this.provinces);
+    this.loadUserProfile(); // Cargar el perfil del usuario al iniciar
   }
 
-  someMethod() {
-    // Cambiar datos
-    this.departments.push('Nuevo Departamento');
-    this.cdr.detectChanges(); // Forzar la detección de cambios
+  loadUserProfile() {
+    this.userService.getUserProfile().subscribe(
+      (data: UsuarioVotante) => {
+        this.user = data; // Asigna los datos del usuario a la variable
+        console.log('Perfil de usuario:', this.user); 
+        console.log('Imagen facial:', this.user.imagenFacial);
+      },
+      error => {
+        console.error('Error al cargar el perfil', error);
+        // Aquí podrías manejar el error, como redirigir a una página de error
+      }
+    );
   }
 
-  changeProfilePhoto() {
-    const input = document.querySelector('input[type="file"]') as HTMLInputElement;
-    input?.click();
-  }
+  logout() {
+    // Aquí puedes agregar la lógica para eliminar el token de sesión
+    localStorage.removeItem('token'); // Elimina el token de sesión del almacenamiento local
+    this.userService.setUserId(null); // Restablecer el ID del usuario
+    this.userService.setUser(null); // Si tienes un método para eliminar el usuario almacenado
 
-  onFileSelected(event: any) {
-    const file: File = event.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = () => {
-        this.user.profilePhoto = reader.result as string;
-      };
-      reader.readAsDataURL(file);
-    }
-  }
-
-  selectDepartment(department: string) {
-    console.log('Departamento seleccionado:', department);
-  }
-  
-  selectDistrict(district: string) {
-    console.log('Distrito seleccionado:', district);
-  }
-  
-  selectProvince(province: string) {
-    console.log('Provincia seleccionada:', province);
-  }
-
-  openDatePicker() {
-    this.showCalendar = !this.showCalendar;
-  }
-
-  onDateChange(event: any) {
-    const selectedDate = event.detail.value; // Obtiene la fecha en formato YYYY-MM-DD
-    if (selectedDate) {
-      const formattedDate = this.formatDate(selectedDate);
-      this.user.birthDate = formattedDate;
-    }
-    this.showCalendar = false; // Oculta el calendario después de seleccionar la fecha
-  }
-
-  formatDate(date: string): string {
-    if (!date) return '';
-    const [year, month, day] = date.split('-');
-    return `${day}/${month}/${year}`; // Cambia el formato a dd/MM/yyyy
-  }
-
-  getFormattedDate(): string {
-    return this.user.birthDate || ''; // Devuelve la fecha en el formato adecuado
-  }
-
-  toggleEmailEdit() {
-    this.isEmailEditable = !this.isEmailEditable; 
-    console.log("Email editable:", this.isEmailEditable);
-  }
-
-  saveData() {
-    // Aquí puedes implementar la lógica para guardar los datos del usuario
-    console.log('Datos guardados:', this.user);
-    // Podrías hacer una llamada a un servicio para guardar los datos en un servidor, por ejemplo.
+    // Redirigir a la página de inicio o de login
+    this.router.navigate(['/login']); // Cambia la ruta según tu aplicación
   }
 }

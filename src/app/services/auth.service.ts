@@ -1,33 +1,100 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
+import { Observable, BehaviorSubject } from 'rxjs';
+import { tap, catchError } from 'rxjs/operators';
+import { environment } from '../../environments/environment';
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
 export class AuthService {
-  private loggedIn = new BehaviorSubject<boolean>(false);
+  private basePath = environment.basePath;
+  private usuarioAutenticadoSubject: BehaviorSubject<any | null>;
+  public usuarioAutenticado$: Observable<any | null>;
 
-  constructor() {
-    // Puedes recuperar el estado de autenticación desde el almacenamiento local o de otra manera
-    const token = localStorage.getItem('token');
-    this.loggedIn.next(!!token);
-  }
+  constructor(private http: HttpClient) {
+    this.usuarioAutenticadoSubject = new BehaviorSubject<any | null>(null);
+    this.usuarioAutenticado$ = this.usuarioAutenticadoSubject.asObservable();
 
-  isAuthenticated(): Observable<boolean> {
-    return this.loggedIn.asObservable();
+    // Verificar si hay un usuario autenticado al iniciar el servicio (por ejemplo, si se recargó la página)
+    const usuarioLogueado = localStorage.getItem('usuarioLogueado');
+    if (usuarioLogueado) {
+      this.usuarioAutenticadoSubject.next(JSON.parse(usuarioLogueado));
+    }
   }
 
   login(email: string, password: string): Observable<any> {
-    // Implementa tu lógica de autenticación aquí
-    // Simular autenticación:
-    const token = 'fake-jwt-token'; // Cambia esto por tu lógica de autenticación real
-    localStorage.setItem('token', token);
-    this.loggedIn.next(true);
-    return new BehaviorSubject({ token }).asObservable(); // Retorna un observable
+    return this.http.post<any>(`${this.basePath}/auth/login`, { email, password })
+      .pipe(
+        tap(response => {
+          console.log('Inicio de sesión exitoso:', response);
+          localStorage.setItem('userId', response.userId);
+          localStorage.setItem('usuarioLogueado', JSON.stringify(response)); // Guarda la información del usuario en localStorage
+          this.usuarioAutenticadoSubject.next(response); // Actualiza el BehaviorSubject con el usuario autenticado
+        },
+        error => {
+          console.error('Error en el inicio de sesión:', error);
+        })
+      );
+  }
+  
+  logout(): void {
+    localStorage.removeItem('usuarioLogueado');
+    this.usuarioAutenticadoSubject.next(null);
   }
 
-  logout(): void {
-    localStorage.removeItem('token');
-    this.loggedIn.next(false);
+  estaAutenticado(): boolean {
+    return !!localStorage.getItem('usuarioLogueado');
   }
+
+  // Método para obtener el usuario autenticado
+  getUsuarioAutenticado(): Observable<any | null> {
+    return this.usuarioAutenticado$;
+  }
+
+  getUsuarioId(): number | null {
+    const usuarioLogueado = localStorage.getItem('usuarioLogueado');
+    if (usuarioLogueado !== null) {
+      const usuario = JSON.parse(usuarioLogueado);
+      return usuario.usuarioId; // Suponiendo que usuarioId es un número
+    }
+    return null; // Manejar el caso donde no se encuentra 'usuarioLogueado'
+  }
+
+  // getCurrentUser() {
+  //   return this.currentUser;
+  // }
+
+  // setCurrentUser(user: any) {
+  //   this.currentUser = user;
+  //   // Puedes guardar el ID del usuario en localStorage u otro almacenamiento según tus necesidades
+  //   localStorage.setItem('currentUser', JSON.stringify(user));
+  // }
+
+  getAuthenticatedUserId(): number | null {
+    const usuarioLogueado = localStorage.getItem('usuarioLogueado');
+    console.log('Usuario logueado:', usuarioLogueado); // Verifica qué contiene usuarioLogueado en la consola
+    if (usuarioLogueado !== null) {
+      try {
+        const usuario = JSON.parse(usuarioLogueado);
+        console.log('ID de usuario:', usuario.usuarioId); // Verifica que 'usuarioId' sea el campo correcto
+        return usuario.usuarioId;
+      } catch (error) {
+        console.error('Error al parsear usuarioLogueado:', error);
+        return null;
+      }
+    }
+    return null; // Manejar el caso donde no se encuentra 'usuarioLogueado'
+  }
+
+  getToken(): string | null {
+    const usuarioLogueado = localStorage.getItem('usuarioLogueado');
+    if (usuarioLogueado !== null) {
+      const usuario = JSON.parse(usuarioLogueado);
+      return usuario.token; // Asegúrate de que este campo sea correcto
+    }
+    return null;
+  }
+
+  
 }
