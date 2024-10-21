@@ -1,13 +1,19 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { PartyService } from './services/party.service'; 
-import { AuthService } from './services/auth.service'; // Suponiendo que tienes un servicio de autenticación
+import { AuthService } from './services/auth.service';
 import { Router } from '@angular/router';
+import { PartidoService } from './services/partido.service'; 
+import { CandidatoService } from './services/candidato.service';
+import { Partido } from './models/partido';  
+import { Candidato } from './models/candidato';  
+import { Observable, forkJoin } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 interface AppPage {
   title: string;
   url: string;
   icon: string;
-  parties?: { name: string; title: string; candidates: any[] }[];
+  parties?: { name: string; title: string; candidates: Candidato[] }[]; 
 }
 
 @Component({
@@ -15,67 +21,72 @@ interface AppPage {
   templateUrl: 'app.component.html',
   styleUrls: ['app.component.scss'],
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
   public appPages: AppPage[] = [
     { title: 'Inicio / Perfil', url: '/folder/Inbox/perfil', icon: 'home' },
-    {
-      title: 'Candidatos', url: '/folder/Inbox/candidatos', icon: 'person',
-      parties: [
-        {
-          name: 'Partido 1',
-          title: 'Partido 1',
-          candidates: [
-            { firstName: 'Juan', lastName: 'Pérez', category: 'Presidente', generalInfo: 'Información del candidato 1.', proposalFile: 'url_del_archivo_propuestas_1' },
-          ]
-        },
-        {
-          name: 'Partido 2',
-          title: 'Partido 2',
-          candidates: [
-            { firstName: 'Ana', lastName: 'García', category: 'Alcalde', generalInfo: 'Información del candidato 2.', proposalFile: 'url_del_archivo_propuestas_2' },
-          ]
-        },
-        {
-          name: 'Partido 3',
-          title: 'Partido 3',
-          candidates: [
-            { firstName: 'Carlos', lastName: 'Martínez', category: 'Senador', generalInfo: 'Información del candidato 3.', proposalFile: 'url_del_archivo_propuestas_3' },
-          ]
-        }
-      ]
-    },
     { title: 'Votar', url: '/folder/Inbox/voto', icon: 'finger-print' },
     { title: 'Verificar Voto', url: '/folder/Inbox/verificar-voto', icon: 'cloud-done' },
   ];
 
   usuarioLogueado: string | null = null;
-  
+
   constructor(
     private authService: AuthService,
     private partyService: PartyService,
-    private router: Router
+    private router: Router,
+    private partidoService: PartidoService, 
+    private candidatoService: CandidatoService
   ) {
-
     this.authService.usuarioAutenticado$.subscribe(usuario => {
       this.usuarioLogueado = usuario;
     });
   }
 
+  ngOnInit() {
+    this.loadParties();
+  }
+
+  // Método para cargar los partidos y candidatos desde el servicio
+  loadParties() {
+    this.partidoService.getPartidos().subscribe(parties => {
+      const candidatosPage: AppPage = {
+        title: 'Candidatos',
+        url: '/folder/Inbox/candidatos',
+        icon: 'person',
+        parties: [], // Inicializa como un array vacío
+      };
+
+      // Usar el operador `forkJoin` para esperar a que todas las solicitudes se completen
+      const requests = parties.map((party: Partido) => {
+        return this.getCandidatesForParty(party.idPartido).pipe(
+          map(candidates => ({
+            idPartido: party.idPartido,
+            name: party.nombre,
+            title: party.nombre,
+            candidates: candidates,
+          }))
+        );
+      });
+
+      // Esperar a que todas las solicitudes se completen
+      forkJoin(requests).subscribe(results => {
+        candidatosPage.parties = results; // Asigna el resultado a parties
+        this.appPages.push(candidatosPage); // Agregar la página de candidatos al menú
+      });
+    });
+  }
+
+  private getCandidatesForParty(partyId: number): Observable<Candidato[]> {
+    return this.candidatoService.getCandidatosByPartido(partyId);
+  }
 
   logout() {
-    this.authService.logout(); // Llama al método de logout en tu AuthService
-    this.router.navigate(['/folder/login']); // Redirige al usuario a la página de inicio de sesión
+    this.authService.logout();
+    this.router.navigate(['/folder/login']);
   }
-
 
   selectParty(party: any) {
-    const fullParty = this.appPages.find(p => p.parties && p.parties.some(pt => pt.title === party.title));
-    if (fullParty && fullParty.parties) {
-      const selectedParty = fullParty.parties.find(pt => pt.title === party.title);
-      if (selectedParty) {
-        this.partyService.setParty(selectedParty); // Actualiza el partido seleccionado
-      }
-    }
+    this.partyService.setParty(party); 
+    this.router.navigate(['/folder/Inbox/candidatos']);
   }
-  
 }
