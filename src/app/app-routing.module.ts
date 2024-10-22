@@ -3,9 +3,13 @@ import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
 
 const routes: Routes = [
   {
-    path: 'folder/login',
-    //redirectTo: 'folder/login',
-    loadChildren: () => import('./folder/login/login.module').then( m => m.LoginPageModule),
+    path: '',
+    redirectTo: 'folder/login',  // Redirige desde la raíz a /folder/login
+    pathMatch: 'full'
+  },
+  {
+    path: 'folder/login',         // Carga el módulo de login cuando se accede a /folder/login
+    loadChildren: () => import('./folder/login/login.module').then(m => m.LoginPageModule),
     pathMatch: 'full'
   },
   {

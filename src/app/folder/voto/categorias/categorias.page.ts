@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { CandidatoService } from 'src/app/services/candidato.service'; // Ajusta la ruta si es necesario
+import { Candidato } from 'src/app/models/candidato';  // Ajusta la ruta si es necesario
 
 @Component({
   selector: 'app-categorias',
@@ -8,48 +10,35 @@ import { Router } from '@angular/router';
 })
 export class CategoriasPage implements OnInit {
   tituloCategoria: string = 'Elección Presidencial 2024';
-  candidatos: any[] = [];
-  seleccionado: boolean = false;
+  candidatos: Candidato[] = []; // Cambiado a tipo Candidato
+  candidatoSeleccionado: Candidato | null = null; // Para almacenar el candidato seleccionado
 
-  constructor(private router: Router) {}
+  constructor(private candidatoService: CandidatoService, private router: Router) {}
 
   ngOnInit() {
-    // Ejemplo de lista de candidatos, podrías cargar esta información desde un servicio o API
-    this.candidatos = [
-      {
-        nombre: 'Candidato 1',
-        partido: 'Partido A',
-        imagen: 'assets/images/1.png',
-        seleccionado: false
-      },
-      {
-        nombre: 'Candidato 2',
-        partido: 'Partido B',
-        imagen: 'assets/images/2.png',
-        seleccionado: false
-      },
-      {
-        nombre: 'Candidato 3',
-        partido: 'Partido C',
-        imagen: 'assets/images/3.png',
-        seleccionado: false
-      }
-    ];
+    this.obtenerCandidatos(); // Llama a la función para obtener los candidatos
   }
 
-  verificarSeleccion(candidato: any) {
-    // Solo permitir una selección
-    this.candidatos.forEach(c => {
-      if (c !== candidato) {
-        c.seleccionado = false;
+  obtenerCandidatos() {
+    this.candidatoService.getCandidatos().subscribe(
+      (data) => {
+        this.candidatos = data; // Asigna la respuesta a la propiedad candidatos
+      },
+      (error) => {
+        console.error('Error al obtener los candidatos:', error);
       }
-    });
-    this.seleccionado = !!this.candidatos.find(c => c.seleccionado);
+    );
+  }
+
+  verificarSeleccion(candidato: Candidato) {
+    // Aquí puedes agregar cualquier lógica que necesites al seleccionar un candidato
+    console.log("Candidato seleccionado:", candidato);
   }
 
   siguienteCategoria() {
     // Lógica para pasar a la siguiente categoría
-    // En este ejemplo, redirige a la página de resumen (puedes cambiar esta lógica)
-    this.router.navigate(['/folder/Inbox/voto/resumen']);
+    this.router.navigate(['/folder/Inbox/voto/resumen'], {
+      state: { candidato: this.candidatoSeleccionado }
+    });
   }
 }
