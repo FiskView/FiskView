@@ -28,7 +28,7 @@ export class AppComponent implements OnInit {
     { title: 'Verificar Voto', url: '/folder/Inbox/verificar-voto', icon: 'cloud-done' },
   ];
 
-  usuarioLogueado: string | null = null;
+  usuarioLogueado: string | null = null; // Variable para almacenar el estado del usuario
 
   constructor(
     private authService: AuthService,
@@ -37,13 +37,14 @@ export class AppComponent implements OnInit {
     private partidoService: PartidoService, 
     private candidatoService: CandidatoService
   ) {
+    // Suscribirse a los cambios en el estado de autenticación
     this.authService.usuarioAutenticado$.subscribe(usuario => {
-      this.usuarioLogueado = usuario;
+      this.usuarioLogueado = usuario; // Actualiza el estado del usuario logueado
     });
   }
 
   ngOnInit() {
-    this.loadParties();
+    this.loadParties(); // Cargar los partidos y candidatos
   }
 
   // Método para cargar los partidos y candidatos desde el servicio
@@ -56,7 +57,6 @@ export class AppComponent implements OnInit {
         parties: [], // Inicializa como un array vacío
       };
 
-      // Usar el operador `forkJoin` para esperar a que todas las solicitudes se completen
       const requests = parties.map((party: Partido) => {
         return this.getCandidatesForParty(party.idPartido).pipe(
           map(candidates => ({
@@ -68,7 +68,6 @@ export class AppComponent implements OnInit {
         );
       });
 
-      // Esperar a que todas las solicitudes se completen
       forkJoin(requests).subscribe(results => {
         candidatosPage.parties = results; // Asigna el resultado a parties
         this.appPages.push(candidatosPage); // Agregar la página de candidatos al menú
@@ -80,11 +79,13 @@ export class AppComponent implements OnInit {
     return this.candidatoService.getCandidatosByPartido(partyId);
   }
 
+  // Método para cerrar sesión
   logout() {
     this.authService.logout();
     this.router.navigate(['/folder/login']);
   }
 
+  // Método para seleccionar un partido
   selectParty(party: any) {
     this.partyService.setParty(party); 
     this.router.navigate(['/folder/Inbox/candidatos']);

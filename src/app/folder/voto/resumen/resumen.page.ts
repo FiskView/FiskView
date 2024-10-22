@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { Candidato } from 'src/app/models/candidato'; // Ajusta la ruta si es necesario
 
 @Component({
   selector: 'app-resumen',
@@ -8,38 +9,29 @@ import { Router } from '@angular/router';
 })
 export class ResumenPage implements OnInit {
 
-  resumenVoto = [
-    {
-      titulo: 'Candidato para Presidente',
-      candidatoNombre: 'Juan Pérez',
-      partidoNombre: 'Partido A',
-      candidatoImagen: 'assets/images/1.png'
-    },
-    {
-      titulo: 'Candidato para Alcalde',
-      candidatoNombre: 'María García',
-      partidoNombre: 'Partido B',
-      candidatoImagen: 'assets/images/2.png'
-    },
-    {
-      titulo: 'Candidato para Regidor',
-      candidatoNombre: 'Carlos López',
-      partidoNombre: 'Partido C',
-      candidatoImagen: 'assets/images/3.png'
-    }
-  ];
+  candidatoSeleccionado: Candidato | null = null; // Aquí almacenamos el candidato seleccionado
 
   constructor(private router: Router) {}
 
+  ngOnInit() {
+    // Recuperar los datos pasados desde la página anterior
+    const navigation = this.router.getCurrentNavigation();
+    this.candidatoSeleccionado = navigation?.extras?.state?.['candidato'] || null;
+  
+    // Verificar si se recibieron los datos correctamente
+    if (this.candidatoSeleccionado) {
+      console.log("Candidato seleccionado:", this.candidatoSeleccionado);
+    } else {
+      console.error("No se encontró el candidato seleccionado");
+    }
+  }
+  
+
   regresar() {
-    // Navegar a la pantalla anterior para cambiar el voto
     this.router.navigate(['/folder/Inbox/voto/categorias']);
   }
 
   confirmarVoto() {
-    // Redirigir a la pantalla de hash o confirmar el voto
     this.router.navigate(['/folder/Inbox/voto/hash']);
   }
-
-  ngOnInit() {}
 }
