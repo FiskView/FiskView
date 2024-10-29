@@ -1,3 +1,25 @@
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 1.2rem;
+  color: #666;
+  background-color: rgba(0, 0, 0, 0.8); /* Fondo negro con un poco de opacidad */
+  padding: 20px; /* Añadir un poco de espacio alrededor */
+  border-radius: 8px; /* Redondeo de bordes para mejorar la apariencia */
+}
+
+
+ion-icon {
+  font-size: 3rem;
+  color: #666;
+}
+
 .camara-container {
     text-align: center;
     margin-top: 20px;

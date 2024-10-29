@@ -27,9 +27,14 @@ export class AuthService {
     return this.http.post<any>(`${this.basePath}/auth/login`, { email, password })
       .pipe(
         tap(response => {
-          console.log('Inicio de sesión exitoso:', response);
+          console.log('Inicio de sesión exitoso:', response); // Verificar la respuesta
           localStorage.setItem('userId', response.userId);
           localStorage.setItem('usuarioLogueado', JSON.stringify(response)); // Guarda la información del usuario en localStorage
+          localStorage.setItem('authToken', response.token); // Asegúrate de guardar el token aquí
+  
+          // Verificar si el token se ha almacenado correctamente
+          console.log('Token almacenado:', localStorage.getItem('authToken')); 
+  
           this.usuarioAutenticadoSubject.next(response); // Actualiza el BehaviorSubject con el usuario autenticado
         },
         error => {
@@ -37,6 +42,7 @@ export class AuthService {
         })
       );
   }
+  
   
   logout(): void {
     localStorage.removeItem('usuarioLogueado');
@@ -91,10 +97,13 @@ export class AuthService {
     const usuarioLogueado = localStorage.getItem('usuarioLogueado');
     if (usuarioLogueado !== null) {
       const usuario = JSON.parse(usuarioLogueado);
-      return usuario.token; // Asegúrate de que este campo sea correcto
+      const token = usuario.token; // Asegúrate de que este campo sea correcto
+      console.log('Token recuperado:', token); // Verificar el token recuperado
+      return token;
     }
     return null;
   }
-
+  
+  
   
 }

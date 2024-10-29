@@ -1,0 +1,15 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Usuario Encontrado</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="closeModal()">Cerrar</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div *ngIf="userId">
+    <p>ID: {{ userId }}</p>
+    <p>Nombre: {{ userName }} {{ userLastName }}</p>
+  </div>
+</ion-content>

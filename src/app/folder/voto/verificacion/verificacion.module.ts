@@ -8,6 +8,10 @@ import { VerificacionPageRoutingModule } from './verificacion-routing.module';
 
 import { VerificacionPage } from './verificacion.page';
 
+import { Camera } from '@ionic-native/camera/ngx';
+
+
+
 @NgModule({
   imports: [
     CommonModule,
@@ -15,6 +19,7 @@ import { VerificacionPage } from './verificacion.page';
     IonicModule,
     VerificacionPageRoutingModule
   ],
+  providers: [Camera],
   declarations: [VerificacionPage]
 })
 export class VerificacionPageModule {}

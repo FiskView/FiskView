@@ -25,7 +25,6 @@ export class PerfilPage implements OnInit {
       (data: UsuarioVotante) => {
         this.user = data; // Asigna los datos del usuario a la variable
         console.log('Perfil de usuario:', this.user); 
-        console.log('Imagen facial:', this.user.imagenFacial);
       },
       error => {
         console.error('Error al cargar el perfil', error);

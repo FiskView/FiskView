@@ -9,6 +9,7 @@ import { tap } from 'rxjs/operators';
 })
 export class UsuarioService {
   private apiUrl = 'http://localhost:8080/api/votantes'; // Cambia esto según tu API
+  private baseRec = 'http://localhost:5000';
   private userId: number | null = null;
   private user: UsuarioVotante | null = null;
 
@@ -29,6 +30,10 @@ export class UsuarioService {
       return this.http.get<UsuarioVotante>(`${this.apiUrl}/${userId}`);
     }
     throw new Error('User ID not set');
+  }
+
+  logBiometrico(base64Image: string): Observable<any> {
+    return this.http.post<any>(`${this.baseRec}/log_biometrico`, { image: base64Image });
   }
   
 }
